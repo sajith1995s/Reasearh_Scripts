@@ -12,9 +12,9 @@ driver.get("https://store.steampowered.com/")
 # get game name by ommand-line argument
 # search_tag = sys.argv[1]
 
-#  games not age check: far cry 4 | crysis | call of duty 4 | pubg | far cry 5 | Need For Speed | gta v | Tomb Raider | anno
-#  games  age check: Call of Duty 7: Black Ops | assassins creed origins
-search_tag = 'assassins creed origins'
+#  games not age check: far cry 4 | Call of Duty®: Modern Warfare® 3 | crysis | call of duty 4 | pubg | far cry 5 | Need For Speed | gta v | Tomb Raider | anno | assassins creed origins
+#  games  age check: Call of Duty 7: Black Ops | call of duty ww2
+search_tag = 'Call of Duty 7: Black Ops'
 
 # search the game
 search_game = driver.find_element_by_id("store_nav_search_term")
@@ -29,17 +29,15 @@ url = driver.current_url
 print(url)
 
 if ("agecheck" in url):
-    print(url)
-    print("agecheck")
+    print("Age Checked")
     # driver.find_element_by_xpath("""// *[ @ id = "ageYear"]""").click()
     search_game = driver.find_element_by_id("ageYear")
     search_game.send_keys("2000")
-    driver.find_element_by_xpath("""//*[@id="app_agegate"]/div[1]/div[4]/a[1]/span""").click()
+    driver.find_element_by_class_name("btnv6_blue_hoverfade").click()
     time.sleep(5)
 
 else :
-    print(url)
-    print("not-agecheck")
+    print("Age Not-Checked")
 
 # get game image
 image = driver.find_element_by_class_name("game_header_image_full")
@@ -85,7 +83,7 @@ for x in range(len(data)):
   if (data[x] == "Video Card" or data[x] == "Graphics"):
       graphics_index = x+1
 
-  if (data[x] == "Hard Disk Space" or data[x] == "Storage" or data[x] == "Hard Drive"):
+  if (data[x] == "Hard Disk Space" or data[x] == "Storage" or data[x] == "Hard Drive" or data[x] == "Disk Space"):
       storage_index = x+1
 
 # game name
