@@ -2,6 +2,7 @@ from selenium import webdriver
 import re
 import sys
 import pymongo
+import time
 
 chrome_path = "..\chromeDriver\chromedriver.exe"
 
@@ -11,8 +12,9 @@ driver.get("https://store.steampowered.com/")
 # get game name by ommand-line argument
 # search_tag = sys.argv[1]
 
-#  games : far cry 4 | crysis | call of duty 4 | pubg | far cry 5 | Need For Speed | gta v | Tomb Raider
-search_tag = 'pubg'
+#  games not age check: far cry 4 | crysis | call of duty 4 | pubg | far cry 5 | Need For Speed | gta v | Tomb Raider | anno
+#  games  age check: Call of Duty 7: Black Ops | assassins creed origins
+search_tag = 'assassins creed origins'
 
 # search the game
 search_game = driver.find_element_by_id("store_nav_search_term")
@@ -21,6 +23,23 @@ search_game.submit()
 
 #  click first game in the search results
 driver.find_element_by_xpath("""//*[@id="search_result_container"]/div[2]/a[1]""").click()
+
+# get age check url
+url = driver.current_url
+print(url)
+
+if ("agecheck" in url):
+    print(url)
+    print("agecheck")
+    # driver.find_element_by_xpath("""// *[ @ id = "ageYear"]""").click()
+    search_game = driver.find_element_by_id("ageYear")
+    search_game.send_keys("2000")
+    driver.find_element_by_xpath("""//*[@id="app_agegate"]/div[1]/div[4]/a[1]/span""").click()
+    time.sleep(5)
+
+else :
+    print(url)
+    print("not-agecheck")
 
 # get game image
 image = driver.find_element_by_class_name("game_header_image_full")
@@ -69,6 +88,8 @@ for x in range(len(data)):
   if (data[x] == "Hard Disk Space" or data[x] == "Storage" or data[x] == "Hard Drive"):
       storage_index = x+1
 
+# game name
+print(game_name)
 # cpu
 cpu = data[cpu_index]
 print(cpu)
@@ -91,9 +112,9 @@ collection = database["games"]
 game = { "name": game_name,
          "cpu": cpu,
          "ram": memory,
-         "gpu": graphics,
-         "storage": storage
-         # "image_url": image_url
+         "graphics": graphics,
+         "storage": storage,
+         "imageSource": image_url
          }
 
 x = collection.insert_one(game)
