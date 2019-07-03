@@ -3,17 +3,24 @@ import re
 import sys
 import pymongo
 import time
+import requests
 
 chrome_path = "..\chromeDriver\chromedriver.exe"
-
 driver = webdriver.Chrome(chrome_path)
+
+# # hide browser
+# driver.set_window_position(-10000,0)
+
+# get steam site
 driver.get("https://store.steampowered.com/")
 
-# get game name by ommand-line argument
+# get game name by command-line argument
 # search_tag = sys.argv[1]
 
-#  games not age check: far cry 4 | Call of Duty®: Modern Warfare® 3 | crysis | call of duty 4 | pubg | far cry 5 | Need For Speed | gta v | Tomb Raider | anno | assassins creed origins
-#  games  age check: Call of Duty 7: Black Ops | call of duty ww2
+#  games not age check: far cry 4 | far cry 5 | crysis | call of duty 4 | pubg |
+#                       Need For Speed | gta v | Tomb Raider | anno | assassins creed origins | Assassins Creed® Odyssey | HITMAN
+
+#  games  age check: Call of Duty 7: Black Ops | Call of Duty®: Modern Warfare® 3
 search_tag = 'Call of Duty 7: Black Ops'
 
 # search the game
@@ -101,11 +108,8 @@ print(graphics)
 storage = data[storage_index]
 print(storage)
 
-
-# insert game in to mongoDB
-myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-database = myclient["techRingdb"]
-collection = database["games"]
+# exit the current tab
+driver.__exit__()
 
 game = { "name": game_name,
          "cpu": cpu,
@@ -115,4 +119,17 @@ game = { "name": game_name,
          "imageSource": image_url
          }
 
-x = collection.insert_one(game)
+# # insert game in to mongoDB
+# myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+# database = myclient["techRingdb"]
+# collection = database["games"]
+#
+# x = collection.insert_one(game)
+
+# insert game by backend
+responce = requests.post("http://localhost:8080/api-techRing/games/create", json=game)
+
+print(responce.status_code)
+print(responce.json())
+
+

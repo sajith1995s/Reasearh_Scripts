@@ -33,3 +33,36 @@ print(url)
 
 if ("agecheck" in url):
     print("qqqqqqqqqqq")
+
+
+
+import requests
+
+game1 = {
+		"name": "12344",
+		"cpu": "Intel Core 2 Duo E4600 2.4GHz / AMD Athlon 64 X2 Dual Core 4200+",
+		"ram": "2 GB ",
+		"graphics": " NVIDIA GeForce 7800 GT 2 GB",
+		"storage": " 8 GB ",
+		"imageSource":"https://i.ytimg.com/vi/aWfuFZ0VJZY/maxresdefault.jpg"
+	}
+
+# insert game by backend
+responce = requests.post("http://localhost:8080/api-techRing/games/create", json=game1)
+
+print(responce.status_code)
+print(responce.json())
+
+
+# run python script from java
+# public void runPython()
+# { //need to call myscript.py and also pass arg1 as its arguments.
+#   //and also myscript.py path is in C:\Demo\myscript.py
+#
+#     String[] cmd = {
+#       "python",
+#       "C:/Demo/myscript.py",
+#       this.arg1,
+#     };
+#     Runtime.getRuntime().exec(cmd);
+# }
