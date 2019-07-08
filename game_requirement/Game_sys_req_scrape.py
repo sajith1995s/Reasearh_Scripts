@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
 import re
 import sys
 import pymongo
@@ -6,7 +7,15 @@ import time
 import requests
 
 chrome_path = "..\chromeDriver\chromedriver.exe"
+
+# without headless mode
 driver = webdriver.Chrome(chrome_path)
+
+# run hedless mode
+# chrome_options = webdriver.ChromeOptions()
+# chrome_options.add_argument("--headless")
+#
+# driver = webdriver.Chrome(chrome_path ,options=chrome_options)
 
 # # hide browser
 # driver.set_window_position(-10000,0)
@@ -17,11 +26,11 @@ driver.get("https://store.steampowered.com/")
 # get game name by command-line argument
 # search_tag = sys.argv[1]
 
-#  games not age check: far cry 4 | far cry 5 | crysis | call of duty 4 | pubg |
+#  games not age check: far cry 4 | far cry 5 | crysis | call of duty 4 | pubg | Sniper Elite 4 | Jurassic World Evolution
 #                       Need For Speed | gta v | Tomb Raider | anno | assassins creed origins | Assassins Creed® Odyssey | HITMAN
 
 #  games  age check: Call of Duty 7: Black Ops | Call of Duty®: Modern Warfare® 3
-search_tag = 'Call of Duty 7: Black Ops'
+search_tag = 'gta v'
 
 # search the game
 search_game = driver.find_element_by_id("store_nav_search_term")
@@ -59,6 +68,7 @@ game_name = game_name_element.text
 try:
     minimum_requirements = driver.find_element_by_xpath("""//ul[contains(.,'Processor: ')]""")
     print(minimum_requirements.text)
+    req = minimum_requirements
 except:
   print("Minimum Requirements Not Available")
 
@@ -68,14 +78,16 @@ print("-------------------------------------------------------------------------
 try:
     recommended_requirements = driver.find_element_by_xpath("""//div[@class='game_area_sys_req_rightCol' and ./ul[contains(.,'Processor: ')]]""")
     print(recommended_requirements.text)
+    req = recommended_requirements
     recomended_requirements = 0
+
 except:
   print("Recommended Requirements Not Available")
 
 print("----------------------------------------------------------")
 
 # split the requirements by new line and ":"
-requirement = minimum_requirements.text
+requirement = req.text
 data = re.split(': |\n', requirement)
 
 # get the indexes of pc parts
@@ -93,20 +105,19 @@ for x in range(len(data)):
   if (data[x] == "Hard Disk Space" or data[x] == "Storage" or data[x] == "Hard Drive" or data[x] == "Disk Space"):
       storage_index = x+1
 
-# game name
-print(game_name)
+
 # cpu
 cpu = data[cpu_index]
-print(cpu)
+
 #  memory
 memory = data[memory_index]
-print(memory)
+
 # graphics
 graphics = data[graphics_index]
-print(graphics)
+
 # storage
 storage = data[storage_index]
-print(storage)
+
 
 # exit the current tab
 driver.__exit__()
@@ -119,6 +130,7 @@ game = { "name": game_name,
          "imageSource": image_url
          }
 
+print(game)
 # # insert game in to mongoDB
 # myclient = pymongo.MongoClient("mongodb://localhost:27017/")
 # database = myclient["techRingdb"]
