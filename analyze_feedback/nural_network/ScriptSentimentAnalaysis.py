@@ -24,23 +24,23 @@ data = pd.read_csv('Sentiment.csv');
 # `text` and `sentiment` are column name
 data = data[['text','sentiment']];
 
-# මේ කෝඩ් එකෙන් කරල තියෙනේ දත්ත සෙට් එකේ sentiment column තියෙන එකේ value එක Neutral වෙන rows අයින් කරන එකයි.
+# remove column "Neutral"
 data = data[data.sentiment != "Neutral"]
 
-# දත්ත සෙට් එකේ තියෙන වචන වල අකුරු සිම්පල් වලට Convert කරන එක
+# convert dataset into lower case
 data['text'] = data['text'].apply(lambda x: x.lower())
 
-# Remove අනවශ්‍ය අකුරු
+# Remove unnecessary characters
 data['text'] = data['text'].apply((lambda x: re.sub('[^a-zA-z0-9\s]','',x)))
 
-# Extract කර ගත්ත දත්ත සෙට් එක Print කරනව
+# print data
 print(data);
 print("########################")
 print(data[ data['sentiment'] == 'Positive'].size)
 print("########################")
 print(data[ data['sentiment'] == 'Negative'].size)
 
-# අපි RNN එක train කරන්න ගත්ත Data සෙට් එකේ rt  කියල වචනයක් තියෙනව, මේ  කෝඩ් එකෙන් කරල තියෙන්නේ  ඒ  rt කියන එක වෙනුවට ' ' replace කරන එක.
+# repalace the 'rt' with ''
 for idx, row in data.iterrows():
     row[0] = row[0].replace('rt', ' ')
 

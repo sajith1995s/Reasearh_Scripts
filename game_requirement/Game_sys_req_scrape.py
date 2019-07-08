@@ -1,5 +1,4 @@
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
 import re
 import sys
 import pymongo
@@ -9,28 +8,29 @@ import requests
 chrome_path = "..\chromeDriver\chromedriver.exe"
 
 # without headless mode
-driver = webdriver.Chrome(chrome_path)
+# driver = webdriver.Chrome(chrome_path)
 
 # run hedless mode
-# chrome_options = webdriver.ChromeOptions()
-# chrome_options.add_argument("--headless")
-#
-# driver = webdriver.Chrome(chrome_path ,options=chrome_options)
+chrome_options = webdriver.ChromeOptions()
+chrome_options.add_argument("--headless")
+
+driver = webdriver.Chrome(chrome_path, options=chrome_options)
 
 # # hide browser
 # driver.set_window_position(-10000,0)
 
 # get steam site
-driver.get("https://store.steampowered.com/")
+driver.get("https://store.steampowered.com/search")
 
 # get game name by command-line argument
 # search_tag = sys.argv[1]
 
-#  games not age check: far cry 4 | far cry 5 | crysis | call of duty 4 | pubg | Sniper Elite 4 | Jurassic World Evolution
+#  games not age check: far cry 4 | far cry 5 | crysis | call of duty 4 | pubg  | Jurassic World Evolution | Tom Clancys Ghost Recon
 #                       Need For Speed | gta v | Tomb Raider | anno | assassins creed origins | Assassins Creed® Odyssey | HITMAN
+#                       Dota 2 |
 
-#  games  age check: Call of Duty 7: Black Ops | Call of Duty®: Modern Warfare® 3
-search_tag = 'gta v'
+#  games  age check: Call of Duty 7: Black Ops | Call of Duty®: Modern Warfare® 3 | Watch_Dogs |  Rise of the Tomb Raider |
+search_tag = 'Stronghold Legends'
 
 # search the game
 search_game = driver.find_element_by_id("store_nav_search_term")
@@ -84,7 +84,7 @@ try:
 except:
   print("Recommended Requirements Not Available")
 
-print("----------------------------------------------------------")
+print("------------------------------------------------------------------------------------------------------------------------------------------")
 
 # split the requirements by new line and ":"
 requirement = req.text
@@ -131,6 +131,7 @@ game = { "name": game_name,
          }
 
 print(game)
+
 # # insert game in to mongoDB
 # myclient = pymongo.MongoClient("mongodb://localhost:27017/")
 # database = myclient["techRingdb"]
@@ -138,7 +139,7 @@ print(game)
 #
 # x = collection.insert_one(game)
 
-# insert game by backend
+# insert game to backend
 responce = requests.post("http://localhost:8080/api-techRing/games/create", json=game)
 
 print(responce.status_code)
