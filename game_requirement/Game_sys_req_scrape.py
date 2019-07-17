@@ -1,20 +1,21 @@
 from selenium import webdriver
-import re
-import sys
-import pymongo
-import time
-import requests
+import re, sys , pymongo, time, requests, os.path
 
-chrome_path = "..\chromeDriver\chromedriver.exe"
+
+# get relative path
+my_path = os.path.abspath(os.path.dirname(__file__))
+chrome_path = os.path.join(my_path, "..\chromeDriver\chromedriver.exe")
+
+# chrome_path =   "..\chromeDriver\chromedriver.exe"
 
 # without headless mode
-# driver = webdriver.Chrome(chrome_path)
+driver = webdriver.Chrome(chrome_path)
 
 # run hedless mode
-chrome_options = webdriver.ChromeOptions()
-chrome_options.add_argument("--headless")
+# chrome_options = webdriver.ChromeOptions()
+# chrome_options.add_argument("--headless")
 
-driver = webdriver.Chrome(chrome_path, options=chrome_options)
+# driver = webdriver.Chrome(chrome_path, options=chrome_options)
 
 # # hide browser
 # driver.set_window_position(-10000,0)
@@ -23,14 +24,14 @@ driver = webdriver.Chrome(chrome_path, options=chrome_options)
 driver.get("https://store.steampowered.com/search")
 
 # get game name by command-line argument
-# search_tag = sys.argv[1]
+search_tag = sys.argv[1]
 
 #  games not age check: far cry 4 | far cry 5 | crysis | call of duty 4 | pubg  | Jurassic World Evolution | Tom Clancys Ghost Recon
 #                       Need For Speed | gta v | Tomb Raider | anno | assassins creed origins | Assassins Creed® Odyssey | HITMAN
 #                       Dota 2 |
 
 #  games  age check: Call of Duty 7: Black Ops | Call of Duty®: Modern Warfare® 3 | Watch_Dogs |  Rise of the Tomb Raider |
-search_tag = 'Stronghold Legends'
+# search_tag = 'Stronghold Legends'
 
 # search the game
 search_game = driver.find_element_by_id("store_nav_search_term")
@@ -144,5 +145,9 @@ responce = requests.post("http://localhost:8080/api-techRing/games/create", json
 
 print(responce.status_code)
 print(responce.json())
+
+
+def main():
+    return responce.json()
 
 
