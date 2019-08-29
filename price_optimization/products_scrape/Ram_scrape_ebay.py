@@ -3,7 +3,6 @@ from urllib.request import urlopen as uReq
 from bs4 import BeautifulSoup as soup
 from pymongo import MongoClient
 import re
-import test2
 
 ram = []
 
@@ -71,6 +70,14 @@ def insertEbayDetails(page_html):
 
             mydict = {"name": name, "size": capacity, "price": price, "type": type,
                       "warranty": warranty, "image": image, "owner": "ebay", "model": model}
+            # Check whether the product is already in the database
+            # If so check the price for the push notification
+
+            # Call Sorting script to get rating
+
+            # Call Sentiment Analysis script to get user review ratings
+
+            # Insert to database
 
 
 url = 'https://www.ebay.com/sch/i.html?_from=R40&_trksid=m570.l1313&_nkw=ram&_sacat=0'

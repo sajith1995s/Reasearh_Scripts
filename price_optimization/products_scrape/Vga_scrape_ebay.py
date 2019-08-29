@@ -66,6 +66,15 @@ def insertEbayDetails(page_html):
             mydict = {"name": name, "size": capacity, "price": price, "type": memory_type, "warranty": warranty,
                       "image": image, "owner": "ebay", "chipset": chipset, "capacity": capacity}
             vga_arry.append(mydict)
+            # Check whether the product is already in the database
+            # If so check the price for the push notification
+
+            # Call Sorting script to get rating
+
+            # Call Sentiment Analysis script to get user review ratings
+
+            # Insert to database
+
 
 url = 'https://www.ebay.com/sch/i.html?_from=R40&_trksid=m570.l1313&_nkw=vga+card&_sacat=0&LH_TitleDesc=0&_osacat=0&_odkw=vga'
 uClient = uReq(url)

@@ -1,18 +1,16 @@
 from pymongo import MongoClient
 import sys
 
-price_min = sys.argv[1]
-price_max = sys.argv[2]
-ram_min = price_min * (10/100)
-ram_max = price_max * (10/100)
-motherboard_min = price_min * (30/100)
-motherboard_max = price_max * (30/100)
-vga_min = price_min * (20/100)
-vga_max = price_max * (20/100)
-cpu_min = price_min * (20/100)
-cpu_max = price_max * (20/100)
-hard_disk_min = price_min * (20/100)
-hard_disk_max = price_max * (20/100)
+ram_min = sys.argv[1]
+ram_max = sys.argv[2]
+motherboard_min = sys.argv[3]
+motherboard_max = sys.argv[4]
+vga_min = sys.argv[5]
+vga_max = sys.argv[6]
+cpu_min = sys.argv[7]
+cpu_max = sys.argv[8]
+hard_disk_min = sys.argv[9]
+hard_disk_max = sys.argv[10]
 
 ram_arr = []
 vga_arr = []
@@ -78,11 +76,6 @@ def build_sequence(lists, category):
             if x == True:
                 build_arr.append(item)
                 break
-    elif category == "hard_disk":
-        build_arr.append("hard_disk")
-        for item in lists:
-            build_arr.append(item)
-            break
 
 cpu = db.CPU
 for record in cpu.find().sort("points"):
@@ -112,12 +105,8 @@ hard_disk = db.Hard_Disk
 for record in hard_disk.find().sort("points").limit(1):
     if hard_disk_min <= float(record['price']) and hard_disk_max >= float(record['price']):
         hard_disk_arr.append(record)
-build_sequence(hard_disk_arr, "hard_disk")
-
+        build_arr.append("hard_disk")
+        build_arr.append(record)
 
 # for x in build_arr:
 #     print(x)
-
-
-
-

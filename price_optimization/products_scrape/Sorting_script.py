@@ -1,66 +1,125 @@
-import json
-import sys
-import subprocess
+
+from pymongo import MongoClient
 
 one = []
-one_final = []
 category = ""
 
-for ones in one:
-    if category == "ram":
-        one_final.append({"name": ones["name"], "price": ones["price"], "type": ones["type"], "size": ones["size"], "points": 0})
-        count = 0
-        for item in sorted(one_final, key=lambda i: i['price']):
-            count = count + 1
-            item["points"] = item["points"] + count
+client = MongoClient('mongodb://localhost:27017')
+db = client.techRingdb
 
-        count = 0
-        for item in sorted(one_final, key=lambda i: i['speed']):
-            count = count + 1
-            item["points"] = item["points"] + count
-    elif category == "vga":
-        one_final.append({"name": ones["name"], "price": ones["price"], "chipset": ones["chipset"], "type": ones["type"], "size": ones["size"], "points": 0})
-        count = 0
-        for item in sorted(one_final, key=lambda i: i['price']):
-            count = count + 1
-            item["points"] = item["points"] + count
+def sorting_algorithm(category, one):
+    for ones in one:
+        if category == "ram":
+            ram = db.RAM
+            count = 0
+            for record in ram.find().sort("price", -1):
+                if record["price"] < ones["price"]:
+                    count = count + 1
+                    continue
+                elif record["price"] == ones["price"]:
+                    count = count + 1
+                    break
+                else:
+                    break
+            for record in ram.find().sort("speed", -1):
+                if record["speed"] < ones["speed"]:
+                    count = count + 1
+                    continue
+                elif record["speed"] == ones["speed"]:
+                    count = count + 1
+                    break
+                else:
+                    break
 
-        count = 0
-        for item in sorted(one_final, key=lambda i: i['speed']):
-            count = count + 1
-            item["points"] = item["points"] + count
-    elif category == "cpu":
-        one_final.append({"name": ones["name"], "price": ones["price"], "proccessor_type": ones["proccessor_type"], "speed": ones["speed"], "size": ones["size"], "points": 0})
-        count = 0
-        for item in sorted(one_final, key=lambda i: i['price']):
-            count = count + 1
-            item["points"] = item["points"] + count
+        elif category == "vga":
+            vga = db.VGA
+            count = 0
+            for record in vga.find().sort("price", -1):
+                if record["price"] < ones["price"]:
+                    count = count + 1
+                    continue
+                elif record["price"] == ones["price"]:
+                    count = count + 1
+                    break
+                else:
+                    break
 
-        count = 0
-        for item in sorted(one_final, key=lambda i: i['speed']):
-            count = count + 1
-            item["points"] = item["points"] + count
-    elif category == "motherboard":
-        one_final.append({"name": ones["name"], "price": ones["price"], "type": ones["type"], "size": ones["size"], "points": 0})
-        count = 0
-        for item in sorted(one_final, key=lambda i: i['price']):
-            count = count + 1
-            item["points"] = item["points"] + count
+            for record in vga.find().sort("speed", -1):
+                if record["speed"] < ones["speed"]:
+                    count = count + 1
+                    continue
+                elif record["speed"] == ones["speed"]:
+                    count = count + 1
+                    break
+                else:
+                    break
 
-        count = 0
-        for item in sorted(one_final, key=lambda i: i['speed']):
-            count = count + 1
-            item["points"] = item["points"] + count
-    elif category == "hard_disk":
-        one_final.append({"name": ones["name"], "price": ones["price"], "size": ones["size"], "points": 0})
-        count = 0
-        for item in sorted(one_final, key=lambda i: i['price']):
-            count = count + 1
-            item["points"] = item["points"] + count
+        elif category == "cpu":
+            cpu = db.CPU
+            count = 0
+            for record in cpu.find().sort("price", -1):
+                if record["price"] < ones["price"]:
+                    count = count + 1
+                    continue
+                elif record["price"] == ones["price"]:
+                    count = count + 1
+                    break
+                else:
+                    break
 
-        count = 0
-        for item in sorted(one_final, key=lambda i: i['speed']):
-            count = count + 1
-            item["points"] = item["points"] + count
+            for record in cpu.find().sort("speed", -1):
+                if record["speed"] < ones["speed"]:
+                    count = count + 1
+                    continue
+                elif record["speed"] == ones["speed"]:
+                    count = count + 1
+                    break
+                else:
+                    break
 
-print(sorted(one_final, key=lambda i: i['points']))
+        elif category == "motherboard":
+            motherboard = db.Motherboard
+            count = 0
+            for record in motherboard.find().sort("price", -1):
+                if record["price"] < ones["price"]:
+                    count = count + 1
+                    continue
+                elif record["price"] == ones["price"]:
+                    count = count + 1
+                    break
+                else:
+                    break
+
+            for record in motherboard.find().sort("speed", -1):
+                if record["speed"] < ones["speed"]:
+                    count = count + 1
+                    continue
+                elif record["speed"] == ones["speed"]:
+                    count = count + 1
+                    break
+                else:
+                    break
+
+        elif category == "hard_disk":
+            hard_disk = db.Hard_Disk
+            count = 0
+            for record in hard_disk.find().sort("price", -1):
+                if record["price"] < ones["price"]:
+                    count = count + 1
+                    continue
+                elif record["price"] == ones["price"]:
+                    count = count + 1
+                    break
+                else:
+                    break
+
+            for record in hard_disk.find().sort("speed", -1):
+                if record["speed"] < ones["speed"]:
+                    count = count + 1
+                    continue
+                elif record["speed"] == ones["speed"]:
+                    count = count + 1
+                    break
+                else:
+                    break
+    return count

@@ -3,7 +3,6 @@ from urllib.request import urlopen as uReq
 from bs4 import BeautifulSoup as soup
 from pymongo import MongoClient
 import re
-import test2
 
 myclient = MongoClient("mongodb://localhost:27017/")
 mydb = myclient["techRingdb"]
@@ -72,10 +71,19 @@ def insertEbayDetails(page_html):
 
             mydict = {"name": name, "size": capacity, "price": price, "warranty": warranty, "image": image,
                       "owner": "ebay", "model": model, "socket": socket, "speed": speed,
-                      "proccessor_type": proccessor_type}
+                      "proccessor_type": proccessor_type, "user_rating": 1, "ratings": 5}
+            x = mycol.insert_one(mydict)
+            print(mydict)
             cpu_array.append(mydict)
-            mydoc = mycol.find({"name": name})
+            # Check whether the product is already in the database
+            # If so check the price for the push notification
+            # mydoc = mycol.find({"name": name})
 
+            # Call Sorting script to get rating
+
+            # Call Sentiment Analysis script to get user review ratings
+
+            # Insert to database
 
 
 
@@ -83,5 +91,5 @@ url = 'https://www.ebay.com/sch/i.html?_from=R40&_trksid=m570.l1313&_nkw=cpu&_sa
 uClient = uReq(url)
 page_html = uClient.read()
 uClient.close()
-mycol = mydb["RAM"]
+mycol = mydb["CPU"]
 insertEbayDetails(page_html)

@@ -1,8 +1,7 @@
-ab = "n"
+import test2
+print(test2.abc(2, 3))
 
-print(len(ab))
+print("end")
 
-# if ab==null:
-#     print("false")
-# else:
-#     print("true")
+
+
