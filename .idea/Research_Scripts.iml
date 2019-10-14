@@ -2,12 +2,14 @@
 <module type="PYTHON_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/price_optimization" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/price_optimization/build_for_price" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/price_optimization/products_scrape" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/price_optimization" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/price_optimization/Accuracy_check" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/analyze_feedback" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.7" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.7 (Reasearh_Scripts)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="TestRunnerService">
