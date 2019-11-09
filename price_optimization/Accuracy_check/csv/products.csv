@@ -1,0 +1,5 @@
+ram,name,size,price,type,warranty,image,owner,cpu_brand,model,user_rating
+vga,name,size,price,type,warranty,image,owner,cpu_brand,model,user_rating
+cpu,name,size,price,type,warranty,image,owner,cpu_brand,model,user_rating
+motherboard,name,size,price,type,warranty,image,owner,cpu_brand,model,user_rating
+hard_disk,name,size,price,type,warranty,image,owner,cpu_brand,model,user_rating

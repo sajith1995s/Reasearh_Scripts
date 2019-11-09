@@ -1,0 +1,6 @@
+motherboard,name,size,price,type,warranty,image,owner,cpu_brand,model,user_rating
+cpu,name,size,price,warranty,image,owner,model,socket,speed,proccessor_type,user_rating
+ram,name,size,price,type,warranty,image,owner,model,user_rating
+vga,name,size,price,type,warranty,image,owner,chipset,capacity,user_rating
+hard_disk,name,size,price,warranty,image,owner,user_rating
+want_product,ram

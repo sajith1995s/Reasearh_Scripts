@@ -2,11 +2,46 @@
 from urllib.request import urlopen as uReq
 from bs4 import BeautifulSoup as soup
 from pymongo import MongoClient
-import re
+import main_user_rating as user_rate
+import Points_script as points_script
+import Push_notification
+import requests
 
 myclient = MongoClient("mongodb://localhost:27017/")
 mydb = myclient["techRingdb"]
 cpu_array = []
+
+api = '4ae5b8fc2f9c52efb3b17a71c19408ac'
+params = {'access_key': api, 'currencies': 'LKR,EUR,AUD,GBP', 'format': 1}
+
+r = requests.get('http://apilayer.net/api/live', params=params)
+livequote = r.json()
+
+lkr = livequote["quotes"]["USDLKR"]
+eur = ((1 / livequote["quotes"]["USDEUR"]) * lkr)
+aud = ((1 / livequote["quotes"]["USDAUD"]) * lkr)
+gbp = ((1 / livequote["quotes"]["USDGBP"]) * lkr)
+
+def convert_price(p):
+    cat = ""
+    if "us" in p.lower():
+        cat = "usd"
+    elif "au" in p.lower():
+        cat = "aud"
+    elif "eur" in p.lower():
+        cat = "eur"
+    elif "gbp" in p.lower():
+        cat = "gbp"
+    p = p.replace(" ", '')
+    p = p.lower().replace("usd", '').replace("us", '').replace("aud", '').replace("au", '').replace("eur", '').replace("eu", '').replace("gbp", '').replace("$", '')
+    if cat == "usd":
+        return (float(p)*lkr).__round__(2)
+    elif cat == "eur":
+        return (float(p)*eur).__round__(2)
+    elif cat == "aud":
+        return (float(p)*aud).__round__(2)
+    elif cat == "gbp":
+        return (float(p)*gbp).__round__(2)
 
 def insertEbayDetails(page_html):
     # HTML Parsing
@@ -40,13 +75,16 @@ def insertEbayDetails(page_html):
             speed = ''
 
             if content1.find("h1", {"id": "itemTitle"}):
-                name = content1.find("h1", {"id": "itemTitle"}).get_text()
+                a = content1.find("h1", {"id": "itemTitle"}).get_text()
+                name = a.replace('Details about   ', '')
             if content1.find("div", {"id": "vi-itm-cond"}):
                 condition = content1.find("div", {"id": "vi-itm-cond"}).get_text()
             if content1.find("span", {"id": "prcIsum"}):
-                price = content1.find("span", {"id": "prcIsum"}).text
-            else:
-                price = content1.find("span", {"id": "prcIsum_bidPrice"}).text
+                price = convert_price(content1.find("span", {"id": "prcIsum"}).text)
+            elif content1.find("span", {"id": "prcIsum_bidPrice"}):
+                price = convert_price(content1.find("span", {"id": "prcIsum_bidPrice"}).text)
+            elif content1.find("span", {"id": "mm-saleDscPrc"}):
+                price = convert_price(content1.find("span", {"id": "mm-saleDscPrc"}).text)
             if content1.find("span", {"id": "vi-ret-accrd-txt"}):
                 warranty = content1.find("span", {"id": "vi-ret-accrd-txt"}).get_text()
             if content1.find("img", {"id": "icImg"}):
@@ -61,31 +99,42 @@ def insertEbayDetails(page_html):
                 array.append(td.text.strip())
 
             for array_item in array:
-                if "Socket Type:" in array_item:
+                if "Socket Type" in array_item:
                     socket = array[count1 + 1]
-                elif "Processor Type:" in array_item:
+                elif ("Processor Type" in array_item) or ("Processor Model" in array_item):
                     proccessor_type = array[count1 + 1]
-                elif "Clock Speed:" in array_item:
+                elif "Clock Speed" in array_item:
                     speed = array[count1 + 1]
                 count1 = count1 + 1
 
+            # Call Sentiment Analysis script to get user review ratings
+            user_rating = user_rate.user_rating()
+
             mydict = {"name": name, "size": capacity, "price": price, "warranty": warranty, "image": image,
                       "owner": "ebay", "model": model, "socket": socket, "speed": speed,
-                      "proccessor_type": proccessor_type, "user_rating": 1, "ratings": 5}
+                      "proccessor_type": proccessor_type, "user_rating": user_rating, "link": link_more}
+
+            # Call points script to get rating
+            ratings = points_script.sorting_algorithm("cpu", mydict)
+            mydict["ratings"] = ratings
             x = mycol.insert_one(mydict)
-            print(mydict)
-            cpu_array.append(mydict)
+
             # Check whether the product is already in the database
-            # If so check the price for the push notification
-            # mydoc = mycol.find({"name": name})
+            mydoc = mycol.find_one({"$and": [{"name": name},{"socket": socket},{"proccessor_type": proccessor_type}]})
+            # If so update the new price
+            # if mydoc != None or mydoc != "":
+            #     if mydoc["price"] != price:
+            #         myquery = {"_id": mydoc['_id']}
+            #         newvalues = {"$set": {"price": price}}
+            #         mycol.update_one(myquery, newvalues)
+            #     # check the price for the push notification
+            #     if mydoc["price"] > price:
+            #         Push_notification.push_notification(mydoc['_id'], mydoc['link'])
+            # else:
+            #     # Insert to database
+            #     x = mycol.insert_one(mydict)
 
-            # Call Sorting script to get rating
-
-            # Call Sentiment Analysis script to get user review ratings
-
-            # Insert to database
-
-
+        count = count + 1
 
 url = 'https://www.ebay.com/sch/i.html?_from=R40&_trksid=m570.l1313&_nkw=cpu&_sacat=0'
 uClient = uReq(url)
